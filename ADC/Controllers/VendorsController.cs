@@ -54,10 +54,11 @@ namespace ADC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Id,EntryDate,UpdateDate,EntryBy,UpdateBy")] Vendors vendors)
+        public async Task<IActionResult> Create(Vendors vendors)
         {
             if (ModelState.IsValid)
             {
+                vendors.EntryBy = User.Identity?.Name;
                 _context.Add(vendors);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -86,7 +87,7 @@ namespace ADC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,Id,EntryDate,UpdateDate,EntryBy,UpdateBy")] Vendors vendors)
+        public async Task<IActionResult> Edit(int id,Vendors vendors)
         {
             if (id != vendors.Id)
             {
@@ -97,6 +98,8 @@ namespace ADC.Controllers
             {
                 try
                 {
+                    vendors.UpdateBy = User.Identity?.Name;
+                    vendors.UpdateDate = DateTime.Now;
                     _context.Update(vendors);
                     await _context.SaveChangesAsync();
                 }
